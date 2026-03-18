@@ -50,3 +50,6 @@ dist-ssr
 .vitepress/cache
 .temp
 *.local
+
+backend/uploads/*
+!backend/uploads/.gitkeep
