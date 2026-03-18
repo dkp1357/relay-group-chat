@@ -84,27 +84,49 @@ export default function Message({ data, isOwn }) {
         )}
         
         {isFile ? (
-          <Link href={data.file_url} isExternal _hover={{ textDecoration: 'none' }}>
-            <Flex 
-              display="inline-flex" 
-              align="center" 
-              gap={2} 
-              p={2} 
-              px={3}
-              bg={fileBg} 
-              border="1px solid" 
-              borderColor={fileBorder} 
-              borderRadius="md"
-              color="brand.500" 
-              fontSize="sm"
-              fontFamily="mono" 
-              mt={1} 
-              transition="all 0.2s"
-              _hover={{ borderColor: 'brand.500', bg: fileHoverBg }}
-            >
-              <Icon as={FaFileAlt} /> {data.filename}
-            </Flex>
-          </Link>
+          <Box mt={1}>
+            {data.filename.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+              <Box 
+                borderRadius="lg" 
+                overflow="hidden" 
+                border="1px solid" 
+                borderColor={fileBorder}
+                maxW="300px"
+              >
+                <Link href={data.file_url} isExternal>
+                  <img 
+                    src={data.file_url} 
+                    alt={data.filename} 
+                    style={{ display: 'block', maxWidth: '100%' }} 
+                  />
+                </Link>
+                <Flex align="center" gap={2} p={2} bg={fileBg} fontSize="xs" color="brand.500">
+                   <Icon as={FaFileAlt} /> {data.filename}
+                </Flex>
+              </Box>
+            ) : (
+              <Link href={data.file_url} isExternal _hover={{ textDecoration: 'none' }}>
+                <Flex 
+                  display="inline-flex" 
+                  align="center" 
+                  gap={2} 
+                  p={2} 
+                  px={3}
+                  bg={fileBg} 
+                  border="1px solid" 
+                  borderColor={fileBorder} 
+                  borderRadius="md"
+                  color="brand.500" 
+                  fontSize="sm"
+                  fontFamily="mono" 
+                  transition="all 0.2s"
+                  _hover={{ borderColor: 'brand.500', bg: fileHoverBg }}
+                >
+                  <Icon as={FaFileAlt} /> {data.filename}
+                </Flex>
+              </Link>
+            )}
+          </Box>
         ) : (
           <Text
             fontSize={isSystem ? "xs" : "sm"}

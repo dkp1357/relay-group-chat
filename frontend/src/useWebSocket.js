@@ -9,6 +9,12 @@ export function useWebSocket({ slug, onMessage }) {
 
   const connect = useCallback(() => {
     if (!slug || !mountedRef.current) return;
+
+    const token = localStorage.getItem("relay_token");
+    if (!token) {
+      reconnectTimer.current = setTimeout(connect, 1000);
+      return;
+    }
     const ws = new WebSocket(wsUrl(slug));
     wsRef.current = ws;
 

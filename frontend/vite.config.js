@@ -12,6 +12,13 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_BACKEND_URL,
           rewrite: (p) => p.replace(/^\/api/, ""),
         },
+        "/ws": {
+          target: env.VITE_BACKEND_URL,
+          ws: true,
+        },
+        "/files": {
+          target: env.VITE_BACKEND_URL,
+        },
       },
     },
   };

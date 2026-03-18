@@ -34,6 +34,11 @@ export default function Chat({ slug, onBack }) {
   const green = useColorModeValue('brand.500', 'brand.400')
   const inputBg = useColorModeValue('white', 'gray.900')
 
+  useEffect(() => {
+    document.title = `Chat: #${slug} | Relay`
+    return () => { document.title = 'Relay' }
+  }, [slug])
+
   // Load message history
   useEffect(() => {
     api.messages(slug, 80).then(history => {
@@ -84,9 +89,9 @@ export default function Chat({ slug, onBack }) {
     if (toast) toast({ title: 'Uploading…', status: 'info', duration: 2000 })
     try {
       await api.uploadFile(slug, file)
-      if (toast) toast({ title: 'File shared!', status: 'success', duration: 3000 })
-    } catch { 
-      if (toast) toast({ title: 'Upload failed.', status: 'error', duration: 3000 }) 
+      toast({ title: 'File shared!', status: 'success', duration: 3000, isClosable: true })
+    } catch (err) { 
+      toast({ title: 'Upload failed.', description: err.message, status: 'error', duration: 4000, isClosable: true }) 
     }
     e.target.value = ''
   }
@@ -204,18 +209,21 @@ export default function Chat({ slug, onBack }) {
         />
         <Tooltip label="Upload file">
           <IconButton 
-            as="label" 
-            cursor="pointer"
             icon={<FaPaperclip />} 
             size="md" 
             variant="outline" 
             colorScheme="gray"
             aria-label="Upload File"
             _hover={{ color: green, borderColor: green }}
-          >
-            <input ref={fileInputRef} type="file" style={{ display: 'none' }} onChange={uploadFile} />
-          </IconButton>
+            onClick={() => fileInputRef.current?.click()}
+          />
         </Tooltip>
+        <input 
+          ref={fileInputRef} 
+          type="file" 
+          style={{ display: 'none' }} 
+          onChange={uploadFile} 
+        />
         <IconButton 
           icon={<FaPaperPlane />} 
           size="md" 
