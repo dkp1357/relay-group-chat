@@ -6,10 +6,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from .database import AsyncSessionLocal
-from .models import User, Room, Message, room_members
-from .auth import decode_token
-from .ws_manager import manager
+from ..database import AsyncSessionLocal
+from ..models import User, Room, Message, room_members
+from ..auth import decode_token
+from ..ws_manager import manager
 
 router = APIRouter()
 

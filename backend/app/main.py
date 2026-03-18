@@ -8,9 +8,9 @@ from fastapi.staticfiles import StaticFiles
 from .config import settings
 from .database import init_db
 from .ws_manager import manager
-from .routes_auth import router as auth_router
-from .routes_rooms import router as rooms_router
-from .routes_ws import router as ws_router
+from .routes.routes_auth import router as auth_router
+from .routes.routes_rooms import router as rooms_router
+from .routes.routes_ws import router as ws_router
 
 
 @asynccontextmanager
@@ -35,6 +35,9 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(rooms_router)
 app.include_router(ws_router)
+
+
+os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
 
 # Serve uploaded files
 app.mount("/files", StaticFiles(directory=settings.UPLOAD_DIR), name="files")

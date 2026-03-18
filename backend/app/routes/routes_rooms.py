@@ -9,12 +9,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
-from .database import get_db
-from .models import User, Room, Message, room_members
-from .schemas import RoomOut, MessageOut
-from .auth import get_current_user
-from .config import settings
-from .ws_manager import manager
+from ..database import get_db
+from ..models import User, Room, Message, room_members
+from ..schemas import RoomOut, MessageOut
+from ..auth import get_current_user
+from ..config import settings
+from ..ws_manager import manager
 
 router = APIRouter(prefix="/rooms", tags=["rooms"])
 

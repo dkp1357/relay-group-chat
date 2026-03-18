@@ -13,7 +13,8 @@ class RegisterRequest(BaseModel):
     @field_validator("email", mode="before")
     @classmethod
     def normalize_email(cls, v):
-        if v is None: return None
+        if v is None:
+            return None
         v = v.strip().lower()
         return v if v else None
 
