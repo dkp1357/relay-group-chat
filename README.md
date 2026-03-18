@@ -1,66 +1,152 @@
 # Relay — Real-time Group Chat
 
-Full-stack group chat with persistent messages, file sharing, and auth.
+A full-stack real-time group chat system with persistent messaging, file sharing, and multiple authentication modes. Designed for horizontal scalability using Redis pub/sub and containerized deployment.
 
-## Stack
+---
 
-| Layer | Tech |
-|---|---|
-| Frontend | React 18 + Vite, served via Nginx |
-| Backend | FastAPI + WebSockets |
-| Database | PostgreSQL 16 (messages, users, rooms) |
-| Pub/Sub | Redis 7 (real-time broadcast) |
-| Auth | JWT + bcrypt (or anonymous) |
-| Files | Uploaded files persisted in a Docker volume |
+## Architecture Overview
 
-## Quick Start
+- **Client → Backend (WebSocket + HTTP)** for real-time messaging and API operations
+- **Backend → Redis (Pub/Sub)** for broadcasting messages across instances
+- **Backend → PostgreSQL** for persistence (users, rooms, messages)
+- **Backend → Volume Storage** for file uploads
+
+---
+
+## Tech Stack
+
+| Layer    | Technology                         |
+| -------- | ---------------------------------- |
+| Frontend | React 18 + Vite (served via Nginx) |
+| Backend  | FastAPI + WebSockets               |
+| Database | PostgreSQL 16                      |
+| Pub/Sub  | Redis 8.4                          |
+| Auth     | JWT + Argon2                       |
+| Storage  | Docker volume (file persistence)   |
+
+---
+
+## Setup
+
+### 1. Environment Variables
+
+Create a `.env` file using `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Fill required values:
+
+- Database credentials
+- Redis URL
+- JWT secret
+- Backend URL
+
+---
+
+### 2. Run with Docker
 
 ```bash
 docker compose up --build
 ```
 
-- **Frontend** → http://localhost:3000
-- **Backend API** → http://localhost:8000
-- **API docs** → http://localhost:8000/docs
+---
 
-## Features
+## Services
 
-- **Login / Register** with username + optional password
-- **Anonymous login** — one-click, no credentials saved
-- **Dashboard** shows all rooms you've joined
-- **Persistent messages** — new joiners see full history
-- **File sharing** — files stored in Docker volume, survive restarts
-- **Invite links** — shareable `?room=SLUG` URLs
-- **Auto-reconnect** — WebSocket reconnects on drop
-- **Multi-instance ready** — Redis pub/sub broadcasts across replicas
+| Service     | URL                        |
+| ----------- | -------------------------- |
+| Frontend    | http://localhost:5173      |
+| Backend API | http://localhost:8000      |
+| API Docs    | http://localhost:8000/docs |
 
-## Auth Modes
+---
 
-| Mode | How |
-|---|---|
-| Registered (with password) | Username + password, sessions persist across devices |
-| Registered (passwordless) | Username only, login by name — good for trusted contexts |
-| Anonymous | Auto-generated `anon_xxxxxx` username, session-only |
+## Core Features
 
-## Development (without Docker)
+### Authentication
 
-```bash
-# Backend
-cd backend
-pip install -r requirements.txt
-DATABASE_URL=postgresql+asyncpg://... REDIS_URL=redis://localhost:6379 uvicorn app.main:app --reload
+- Username + password login (persistent)
+- Anonymous login (`anon_xxxxxx`, session-based)
 
-# Frontend
-cd frontend
-npm install
-npm run dev   # proxies /api and /ws to :8000
-```
+---
 
-## Environment Variables (backend)
+### Chat System
 
-| Variable | Default | Description |
-|---|---|---|
-| `DATABASE_URL` | postgres://relay:relaypass@db/relay | PostgreSQL DSN |
-| `REDIS_URL` | redis://redis:6379 | Redis DSN |
-| `SECRET_KEY` | (change in prod!) | JWT signing key |
-| `UPLOAD_DIR` | /uploads | File upload directory |
+- Real-time messaging via WebSockets
+- Persistent message history (stored in PostgreSQL)
+- Users joining later can view previous messages
+
+---
+
+### Rooms
+
+- Create chat rooms
+- Join via invite links:
+
+  ```
+  http://localhost:3000/?room=<ROOM_SLUG>
+  ```
+
+- Dashboard shows joined rooms
+
+---
+
+### File Sharing
+
+- Upload files in chat
+- Files stored in Docker volume
+- Survive container restarts
+
+---
+
+### Reliability
+
+- Automatic WebSocket reconnection on disconnect
+- Stateless backend instances
+- Redis pub/sub ensures cross-instance message sync
+
+---
+
+## Auth Modes Explained
+
+| Mode                  | Behavior                                |
+| --------------------- | --------------------------------------- |
+| Registered (password) | Secure login, persistent across devices |
+| Anonymous             | Temporary session, random username      |
+
+---
+
+## API Highlights
+
+- REST endpoints for:
+  - Auth (login/register)
+  - Room management
+  - File upload/download
+
+- WebSocket endpoint:
+  - Real-time messaging
+  - Room-based broadcasting
+
+---
+
+## Deployment Notes
+
+- Frontend served via Nginx
+- Backend is stateless → scale horizontally
+- Redis required for multi-instance sync
+- PostgreSQL handles persistence
+- Uses reverse proxy (Nginx)
+
+---
+
+## Possible Improvements
+
+- Message reactions and typing indicators
+- Read receipts
+- Role-based access control (admin/moderator)
+- Rate limiting and abuse prevention
+- End-to-end encryption
+- Search over message history
+- Push notifications
