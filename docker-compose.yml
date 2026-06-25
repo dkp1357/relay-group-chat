@@ -1,17 +1,17 @@
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg17_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -20,7 +20,7 @@ services:
     image: redis:8.4-alpine
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -46,7 +46,7 @@ services:
     volumes:
       - uploads:/uploads
     ports:
-      - "8000:8000"
+      - "8002:8000"
 
   frontend:
     build: ./frontend
@@ -54,11 +54,11 @@ services:
     environment:
       - VITE_BACKEND_URL=${VITE_BACKEND_URL}
     ports:
-      - "5173:80"
+      - "5174:80"
     depends_on:
       - backend
 
 volumes:
-  pg_data:
+  pg17_data:
   redis_data:
   uploads:
